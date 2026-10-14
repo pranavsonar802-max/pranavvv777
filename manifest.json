@@ -1,0 +1,63 @@
+{
+  "name": "PRANAV SONAR — Creative Technologist & Portfolio",
+  "short_name": "Pranav Sonar",
+  "description": "Cinematic 60fps scroll-driven portfolio of Pranav Sonar. Full-stack engineering, interactive WebGL, and high-performance creative design.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#030305",
+  "theme_color": "#7928ca",
+  "lang": "en",
+  "dir": "ltr",
+  "categories": ["portfolio", "technology", "design"],
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-maskable.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Projects & Work",
+      "short_name": "Work",
+      "description": "Explore engineering and design case studies",
+      "url": "/#work",
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Instant Contact",
+      "short_name": "Contact",
+      "description": "Direct message transmission to Pranav Sonar",
+      "url": "/#contact",
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Visitor Certificate",
+      "short_name": "Certificate",
+      "description": "Generate your official appreciation certificate",
+      "url": "/#certificate",
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }]
+    }
+  ]
+}

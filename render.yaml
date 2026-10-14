@@ -1,0 +1,26 @@
+# ==============================================================================
+# RENDER BLUEPRINT CONFIGURATION (render.yaml)
+# Deploy in 1-Click to Render (Web Service)
+# ==============================================================================
+
+services:
+  - type: web
+    name: pranav-sonar-portfolio
+    env: node
+    plan: free
+    buildCommand: npm install
+    startCommand: node server.js
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: OWNER_EMAIL
+        value: pranavsonar4444@gmail.com
+      - key: OWNER_PIN
+        value: pranav4444
+      - key: SMTP_SERVICE
+        value: gmail
+      - key: SMTP_USER
+        value: pranavsonar4444@gmail.com
+      - key: SMTP_PASS
+        sync: false

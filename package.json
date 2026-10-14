@@ -1,0 +1,24 @@
+{
+  "name": "scroll-animated-cinematic-portfolio",
+  "version": "1.0.0",
+  "description": "Ultra-smooth 60fps scroll-based cinematic frame sequence animation",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "keywords": [
+    "canvas",
+    "animation",
+    "scroll-driven",
+    "cinematic",
+    "lerp"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "html2canvas": "^1.4.1",
+    "jspdf": "^4.2.1",
+    "nodemailer": "^10.0.16"
+  }
+}

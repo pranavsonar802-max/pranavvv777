@@ -1,0 +1,1667 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PRANAV SONAR — Creative Technologist & Portfolio</title>
+  <meta name="description" content="Cinematic 60fps scroll-driven portfolio of Pranav Sonar. Full-stack engineering, interactive WebGL, and high-performance creative design.">
+  
+  <!-- Preconnect & Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=Syne:wght@600;700;800&family=Alex+Brush&family=Cinzel:wght@500;600;700;800&family=Great+Vibes&display=swap" rel="stylesheet">
+  
+  <!-- Client-side PDF Generation Dependencies (Local Vendor + CDN Fallback) -->
+  <script src="vendor/html2canvas.min.js"></script>
+  <script src="vendor/jspdf.umd.min.js"></script>
+  <script>
+    if (typeof html2canvas === 'undefined') {
+      document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"><\/script>');
+    }
+    if (typeof jspdf === 'undefined' && typeof jsPDF === 'undefined') {
+      document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"><\/script>');
+    }
+  </script>
+  
+  <!-- PWA & Mobile Web App Meta -->
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#030305">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Pranav Sonar">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="icon" type="image/svg+xml" href="/icon.svg">
+  <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
+  <link rel="stylesheet" href="style.css?v=3.3">
+</head>
+<body>
+
+  <!-- Fullscreen Interactive Canvas Stage -->
+  <div class="canvas-container" id="stage-container">
+    <canvas id="hero-canvas"></canvas>
+    
+    <!-- Ambient Vignette & Violet Glow matching the subject rim lighting -->
+    <div class="glow-accent"></div>
+
+    <!-- Drag to Scrub Floating Feedback Indicator -->
+    <div class="drag-indicator" id="drag-indicator">
+      <span class="drag-icon">⇋</span>
+      <span class="drag-label" id="drag-label">DRAGGING</span>
+    </div>
+  </div>
+
+  <!-- Top Navigation & Controls Header -->
+  <header class="site-header">
+    <div class="nav-left">
+      <div class="brand-badge" id="brand-badge">
+        <span class="live-dot"></span>
+        <span class="brand-name">PRANAV SONAR</span>
+        <span class="brand-divider">/</span>
+        <span class="brand-role">PORTFOLIO '26</span>
+      </div>
+    </div>
+
+    <!-- Chapter Navigation Links -->
+    <nav class="chapter-nav" id="chapter-nav" aria-label="Portfolio sections">
+      <button class="chapter-link active" data-chapter="hero" type="button">01 // HERO</button>
+      <button class="chapter-link" data-chapter="about" type="button">02 // ABOUT</button>
+      <button class="chapter-link" data-chapter="projects" type="button">03 // WORK</button>
+      <button class="chapter-link" data-chapter="skills" type="button">04 // TECH</button>
+      <button class="chapter-link" data-chapter="contact" type="button">05 // CONTACT</button>
+    </nav>
+
+    <!-- Top Right HUD Actions -->
+        <div class="hud-actions">
+      <!-- Usage Analytics Dashboard Trigger -->
+      <button id="analytics-nav-btn" class="hud-btn analytics-hud-btn" title="View Portfolio Visitor Insights & Performance Analytics">
+        <span class="live-dot-green"></span>
+        <span class="btn-text">ANALYTICS</span>
+      </button>
+
+      <!-- Digital Visitor Appreciation Certificate Trigger -->
+      <button id="cert-nav-btn" class="hud-btn cert-hud-btn" title="Generate Verified Visitor Appreciation Certificate">
+        <span class="btn-icon">🏆</span>
+        <span class="btn-text">CERTIFICATE</span>
+      </button>
+
+      <button id="db-nav-btn" class="hud-btn db-hud-btn" title="View Real-Time Database Transmissions">
+        <span class="btn-icon">⚡</span>
+        <span class="btn-text">DATABASE</span>
+        <span class="db-pill-count" id="nav-db-count">0</span>
+      </button>
+      <button id="reports-nav-btn" class="hud-btn reports-hud-btn" title="Open Security & Audit Transmissions Dossier">
+        <span class="btn-icon">📋</span>
+        <span class="btn-text">REPORTS</span>
+      </button>
+      <a href="/RESEARCH_PAPER_PRANAV_SONAR.html" target="_blank" rel="noopener" id="research-nav-btn" class="hud-btn research-hud-btn" title="View Pranav Sonar's Academic Research Paper (IEEE Format)">
+        <span class="btn-icon">📄</span>
+        <span class="btn-text">RESEARCH</span>
+      </a>
+      <a href="/download" download="ALL_PROJECT_FILES.zip" id="download-zip-nav-btn" class="hud-btn download-hud-btn" title="Download Complete Project Package (.ZIP)">
+        <span class="btn-icon">📦</span>
+        <span class="btn-text">DOWNLOAD ZIP</span>
+      </a>
+      <button id="theme-btn" class="hud-btn icon-only" title="Toggle Visual Atmosphere (T)">☀️</button>
+      <button id="sound-btn" class="hud-btn icon-only" title="Toggle Soundscape Audio (M)">🔊</button>
+      <button id="lang-btn" class="hud-btn" title="Toggle Language (L)">EN</button>
+    </div>
+  </header>
+
+  <!-- Mobile Navigation Drawer -->
+  <div class="mobile-nav-drawer" id="mobile-nav-drawer" aria-hidden="true">
+    <div class="mobile-nav-backdrop" id="mobile-nav-backdrop"></div>
+    <div class="mobile-nav-panel">
+      <div class="mobile-nav-header">
+        <div class="mobile-brand">
+          <span class="live-dot"></span>
+          <span>PRANAV SONAR</span>
+        </div>
+        <button type="button" class="mobile-nav-close" id="mobile-nav-close" aria-label="Close Navigation">✕</button>
+      </div>
+
+      <div class="mobile-chapter-links">
+        <button class="mobile-chapter-btn active" data-chapter="hero" type="button">
+          <span class="chap-num">01</span>
+          <span class="chap-name">HERO // INTRODUCTION</span>
+        </button>
+        <button class="mobile-chapter-btn" data-chapter="about" type="button">
+          <span class="chap-num">02</span>
+          <span class="chap-name">ABOUT // PHILOSOPHY</span>
+        </button>
+        <button class="mobile-chapter-btn" data-chapter="projects" type="button">
+          <span class="chap-num">03</span>
+          <span class="chap-name">WORK // CASE STUDIES</span>
+        </button>
+        <button class="mobile-chapter-btn" data-chapter="skills" type="button">
+          <span class="chap-num">04</span>
+          <span class="chap-name">TECH // CAPABILITIES</span>
+        </button>
+        <button class="mobile-chapter-btn" data-chapter="contact" type="button">
+          <span class="chap-num">05</span>
+          <span class="chap-name">CONTACT // TRANSMISSION</span>
+        </button>
+      </div>
+
+      <div class="mobile-quick-actions">
+        <a href="https://github.com/pranavsonar802-max" target="_blank" rel="noopener" class="mobile-action-pill github-pill">
+          <span>🐙 GITHUB PROFILE</span>
+        </a>
+        <button id="pwa-install-btn" class="mobile-action-pill pwa-install-pill" type="button" style="display: none;">
+          <span>📲 INSTALL APP TO ANDROID / IPHONE</span>
+        </button>
+        <button id="mobile-owner-btn" class="mobile-action-pill owner-pill" type="button">
+          <span>🔒 OWNER PORTAL (PIN)</span>
+        </button>
+      </div>
+
+      <div class="mobile-nav-footer">
+        <span>PRANAV SONAR PORTFOLIO '26</span>
+        <span class="live-status-dot">● LIVE SYSTEM</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Interactive HUD Scrubber Track -->
+  <div class="hud-scrubber-track" id="hud-scrubber" title="Click or drag to scrub frames (1 - 300)">
+    <div class="scrubber-progress" id="scrubber-progress"></div>
+    <div class="scrubber-thumb" id="scrubber-thumb"></div>
+    <div class="scrubber-markers">
+      <div class="scrubber-marker" style="left: 0.3%;" data-chapter="hero" title="01 // HERO (Frame 1)"></div>
+      <div class="scrubber-marker" style="left: 31.7%;" data-chapter="about" title="02 // ABOUT (Frame 95)"></div>
+      <div class="scrubber-marker" style="left: 60.0%;" data-chapter="projects" title="03 // WORK (Frame 180)"></div>
+      <div class="scrubber-marker" style="left: 81.6%;" data-chapter="skills" title="04 // TECH (Frame 245)"></div>
+      <div class="scrubber-marker" style="left: 95.0%;" data-chapter="contact" title="05 // CONTACT (Frame 285)"></div>
+    </div>
+    <div class="scrubber-tooltip" id="scrubber-tooltip">FRAME 001 // HERO</div>
+  </div>
+
+  <!-- Hero Editorial Headline Overlay (Inspired by Pinterest Design) -->
+  <div class="hero-editorial-overlay" id="hero-editorial">
+    <div class="hero-creds-top">
+      <div class="hero-role-pill">
+        <span class="hero-spec">CREATIVE TECHNOLOGIST &amp; FULL-STACK ENGINEER</span>
+      </div>
+      <button class="hero-action-link" id="hero-explore-btn" type="button">
+        EXPLORE WORK <span class="arrow-glyph">⟶</span>
+      </button>
+    </div>
+
+    <!-- Massive Condensed "PORTFOLIO" Wordmark Framing the Subject -->
+    <div class="hero-title-container">
+      <h1 class="hero-editorial-title">
+        <span class="title-word word-port">PORT</span>
+        <span class="title-word word-folio">FOLIO</span>
+      </h1>
+    </div>
+
+              <div class="hero-creds-bottom">
+            <span class="cred-pill">🎨 60 FPS CANVAS VISUALS</span>
+            <span class="cred-pill">⚡ PURE VANILLA CORE</span>
+            <span class="cred-pill">📱 FULL-DEVICE RESPONSIVE</span>
+          </div>
+        <div class="creds-sub">📞 +91 9284166996 • ▶ @kingofshort7004 • 📸 @px_backlight777</div>
+      </div>
+
+      <div class="creds-col-right">
+        <div class="creds-status">
+          <span class="status-pulse-dot"></span>
+          <span>PUNE, INDIA • OPEN FOR COLLABORATION</span>
+        </div>
+        <div class="creds-web">PRANAVSONAR802@GMAIL.COM</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Interactive Story Content Layers (Scroll-Synced Chapters) -->
+  <div class="story-wrapper" id="story-wrapper">
+
+    <!-- CHAPTER 02: ABOUT -->
+    <section class="story-chapter" id="chapter-about-sec" data-range="61-135">
+      <div class="chapter-backdrop"></div>
+      
+      <div class="chapter-content-grid">
+        <!-- Left Side: Algorithmic Problem Solving & Competitive Coding Profiles -->
+        <div class="glass-panel panel-left coding-profiles-panel">
+          <div class="panel-header">
+            <span class="section-tag">// 01 — ALGORITHMIC MASTERY &amp; CODING PROFILES</span>
+            <span class="chapter-num">02 / 05</span>
+          </div>
+          <h2 class="panel-title coding-panel-title">DATA STRUCTURES &amp; ALGORITHMIC RIGOR</h2>
+          <p class="panel-description">
+            Dedicated problem solver specializing in optimal time-space computational complexity, advanced data structures, and algorithmic optimization across premier coding arenas.
+          </p>
+
+          <!-- Interactive Coding Profiles Showcase Cards -->
+          <div class="coding-cards-container">
+            <!-- LeetCode Profile Card -->
+            <a href="https://leetcode.com/u/pxprnavvv2006/" target="_blank" rel="noopener" class="coding-profile-card leetcode-card" title="Open Pranav's LeetCode Profile (@pxprnavvv2006)">
+              <div class="coding-card-top">
+                <div class="platform-badge leetcode-badge">
+                  <span class="platform-icon">🟡</span>
+                  <span class="platform-name">LEETCODE</span>
+                </div>
+                <span class="card-action-arrow">PROFILE ↗</span>
+              </div>
+              <div class="platform-handle">@pxprnavvv2006</div>
+              <p class="platform-desc">Dynamic Programming, Graphs, Trees, Matrix Optimization &amp; Array Algorithms.</p>
+              <div class="coding-card-topics">
+                <span class="topic-tag">Data Structures</span>
+                <span class="topic-tag">Algorithms</span>
+                <span class="topic-tag">O(log N) Optimization</span>
+              </div>
+              <div class="platform-direct-btn">VISIT LEETCODE PROFILE ↗</div>
+            </a>
+
+            <!-- GeeksforGeeks Profile Card -->
+            <a href="https://www.geeksforgeeks.org/profile/pranavsod53v?tab=activity" target="_blank" rel="noopener" class="coding-profile-card gfg-card" title="Open Pranav's GeeksforGeeks Activity Profile (@pranavsod53v)">
+              <div class="coding-card-top">
+                <div class="platform-badge gfg-badge">
+                  <span class="platform-icon">🟢</span>
+                  <span class="platform-name">GEEKSFORGEEKS</span>
+                </div>
+                <span class="card-action-arrow">ACTIVITY ↗</span>
+              </div>
+              <div class="platform-handle">@pranavsod53v</div>
+              <p class="platform-desc">Core Computer Science, System Design, Graph Theory, and Competitive Challenges.</p>
+              <div class="coding-card-topics">
+                <span class="topic-tag">Core CS</span>
+                <span class="topic-tag">Problem Solving</span>
+                <span class="topic-tag">Activity Log</span>
+              </div>
+              <div class="platform-direct-btn">VISIT GEEKSFORGEEKS ↗</div>
+            </a>
+          </div>
+        </div>
+
+        <!-- Right Side: JSPM ERP Case Study Card (Private Enterprise System) -->
+        <div class="glass-panel panel-right jspm-erp-card">
+          <div class="panel-header">
+            <span class="section-tag">// ENTERPRISE CASE STUDY</span>
+            <span class="panel-status-indicator private-badge">🔒 PRIVATE ACCESS</span>
+          </div>
+          <h2 class="panel-title erp-card-title">JSPM ERP &amp; CAMPUS MOODLE SYSTEM</h2>
+          <p class="panel-description">
+            Unified Institutional Enterprise Resource Planning platform managing 15,000+ students and faculty across JSPM campuses with live Moodle LMS integration, high-concurrency exam processing, and role-based security.
+          </p>
+
+          <div class="erp-stats-strip">
+            <div class="erp-stat-mini">
+              <span class="erp-val">15K+</span>
+              <span class="erp-lbl">Active Students</span>
+            </div>
+            <div class="erp-stat-mini">
+              <span class="erp-val">99.98%</span>
+              <span class="erp-lbl">Exam Uptime</span>
+            </div>
+            <div class="erp-stat-mini">
+              <span class="erp-val">&lt;45ms</span>
+              <span class="erp-lbl">API Latency</span>
+            </div>
+          </div>
+
+          <div class="erp-security-notice">
+            <span class="security-lock-icon">🛡️</span>
+            <span>Gated Security: Access credentials &amp; visitor info are dispatched directly to owner (<strong>pranavsonar4444@gmail.com</strong>) for approval.</span>
+          </div>
+
+          <div class="erp-card-actions">
+            <button type="button" class="project-btn primary open-jspm-erp-btn" id="open-jspm-erp-btn">
+              <span>UNLOCK JSPM ERP CASE STUDY</span>
+              <span class="btn-lock-icon">🔒</span>
+            </button>
+            <span class="erp-status-chip" id="erp-status-chip">AUTHENTICATION REQUIRED</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CHAPTER 03: FEATURED WORK & LIVE REPOSITORIES -->
+    <section class="story-chapter" id="chapter-projects-sec" data-range="136-225">
+      <div class="chapter-backdrop"></div>
+      
+      <div class="projects-chapter-container">
+        <!-- Interactive Category Tabs -->
+        <div class="project-tabs-header-wrap">
+          <div class="tabs-header-left">
+            <span class="section-tag">// 02 — PRODUCTION REPERTOIRE</span>
+            <span class="chapter-num">03 / 05</span>
+          </div>
+          <div class="project-tabs-bar" id="project-tabs-bar" role="tablist" aria-label="Project Categories">
+            <button class="proj-tab active" data-filter="all" type="button">ALL WORKS (6)</button>
+            <button class="proj-tab" data-filter="github" type="button">🔥 GITHUB LIVE REPOS (<span id="github-repo-count">11</span>)</button>
+            <button class="proj-tab" data-filter="webgl" type="button">CREATIVE &amp; WEBGL</button>
+            <button class="proj-tab" data-filter="apps" type="button">FULL-STACK &amp; APPS</button>
+          </div>
+        </div>
+
+        <!-- Dynamic Live GitHub Repos Grid Container -->
+        <div class="live-github-wrapper" id="live-github-wrapper" style="display: none;">
+          <div class="live-github-badge-row">
+            <span class="live-pulse-badge"><span class="pulse-point"></span> LIVE GITHUB REST API CONNECTED</span>
+            <a href="https://github.com/pranavsonar802-max?tab=repositories" target="_blank" rel="noopener" class="social-pill highlight-pill" title="Directly Open All GitHub Repositories">OPEN ALL REPOS ON GITHUB ↗</a>
+            <span class="live-sync-time" id="github-sync-time">SYNCED WITH @PRANAVSONAR23 &amp; @pranavsonar802-max</span>
+          </div>
+          <div class="live-github-grid" id="live-github-grid">
+            <!-- Dynamically populated from /api/github/repos -->
+          </div>
+        </div>
+
+        <div class="chapter-content-grid projects-layout" id="projects-grid">
+          <!-- Featured Research Publication Card: Pranav Sonar IEEE 2026 -->
+          <div class="glass-panel project-card research-publication-card" data-category="research all" data-project-id="research-paper" style="border: 1px solid #a855f7; box-shadow: 0 0 30px rgba(168, 85, 247, 0.28);">
+            <div class="project-header">
+              <span class="project-category" style="color: #c084fc; font-weight: bold;">IEEE / ICAWEIC 2026 • ACADEMIC RESEARCH</span>
+              <span class="project-badge-live" style="background: rgba(168, 85, 247, 0.2); color: #e9d5ff; border: 1px solid #a855f7;">PEER AUDITED</span>
+            </div>
+            <h3 class="project-title" style="font-size: 1.12rem; color: #ffffff;">DETERMINISTIC 60 FPS CANVAS PIPELINE &amp; TELEMETRY</h3>
+            <p class="project-summary">
+              Academic research treatise by Pranav Sonar exploring sub-millisecond 2D canvas frame scrubbing, inertial lerp momentum smoothing, local heuristic AI inference, and zero-latency SSE telemetry.
+            </p>
+            <div class="project-tech-stack">
+              <span>Scrollytelling</span>
+              <span>2D Canvas</span>
+              <span>Lerp Kinematics</span>
+              <span>Server-Sent Events</span>
+              <span>JSPM ICOER</span>
+            </div>
+            <div class="project-footer" style="display: flex; gap: 8px; flex-wrap: wrap;">
+              <a href="/RESEARCH_PAPER_PRANAV_SONAR.html" target="_blank" rel="noopener" class="project-btn primary" style="background: linear-gradient(135deg, #7c3aed, #a855f7); flex: 1; text-align: center;">
+                <span>📖 READ FULL PAPER ↗</span>
+              </a>
+              <a href="/RESEARCH_PAPER_PRANAV_SONAR.md" download="RESEARCH_PAPER_PRANAV_SONAR.md" class="project-btn secondary" style="flex: 1; text-align: center;">
+                <span>📥 DOWNLOAD (MD)</span>
+              </a>
+            </div>
+          </div>
+
+          <!-- Project Card 1: Sender App (Live on Vercel + GitHub) -->
+          <div class="glass-panel project-card" data-category="github apps" data-project-id="sender-app">
+            <div class="project-header">
+              <span class="project-category">FULL-STACK MESSAGING</span>
+              <span class="project-badge-live">VERCEL LIVE</span>
+            </div>
+            <h3 class="project-title">SENDER APP</h3>
+            <p class="project-summary">
+              High-velocity real-time messaging application with live WebSocket channels, room feeds, and instantaneous notification alerts.
+            </p>
+            <div class="project-tech-stack">
+              <span>JavaScript</span>
+              <span>WebSockets</span>
+              <span>Node.js</span>
+              <span>Vercel Cloud</span>
+            </div>
+            <div class="project-footer">
+              <a href="https://sender-app.vercel.app" target="_blank" rel="noopener" class="project-btn primary">LIVE DEMO ↗</a>
+              <button type="button" class="project-btn secondary open-case-study" data-project-id="sender-app">CASE STUDY ↗</button>
+              <a href="https://github.com/PRANAVSONAR23/Sender-app" target="_blank" rel="noopener" class="project-btn secondary" title="GitHub Repository">GITHUB ↗</a>
+            </div>
+          </div>
+
+          <!-- Project Card 2: Silvertongue (Kotlin Native) -->
+          <div class="glass-panel project-card" data-category="github apps" data-project-id="silvertongue">
+            <div class="project-header">
+              <span class="project-category">NATIVE CONCURRENCY</span>
+              <span class="project-year">2026</span>
+            </div>
+            <h3 class="project-title">SILVERTONGUE</h3>
+            <p class="project-summary">
+              High-performance mobile utility engine engineered in Kotlin with native coroutine concurrency, reactive streams, and clean architecture.
+            </p>
+            <div class="project-tech-stack">
+              <span>Kotlin</span>
+              <span>Coroutines</span>
+              <span>Android SDK</span>
+              <span>Clean Arch</span>
+            </div>
+            <div class="project-footer">
+              <button type="button" class="project-btn primary open-case-study" data-project-id="silvertongue">CASE STUDY ↗</button>
+              <a href="https://github.com/PRANAVSONAR23/Silvertongue" target="_blank" rel="noopener" class="project-btn secondary">GITHUB REPO ↗</a>
+            </div>
+          </div>
+
+          <!-- Project Card 3: Aura Cinema Engine -->
+          <div class="glass-panel project-card" data-category="webgl github" data-project-id="aura-cinema">
+            <div class="project-header">
+              <span class="project-category">CREATIVE INTERACTION</span>
+              <span class="project-badge-live">60 FPS</span>
+            </div>
+            <h3 class="project-title">AURA CINEMA ENGINE</h3>
+            <p class="project-summary">
+              Hardware-accelerated linear momentum canvas scrubber with zero dependencies, predictive keyframe caching, and dynamic retina scaling.
+            </p>
+            <div class="project-tech-stack">
+              <span>Vanilla JS</span>
+              <span>Lerp Physics</span>
+              <span>GPU Accel</span>
+              <span>Node.js</span>
+            </div>
+            <div class="project-footer">
+              <button type="button" class="project-btn primary open-case-study" data-project-id="aura-cinema">DEEP DIVE ↗</button>
+              <a href="https://github.com/pranavsonar802-max" target="_blank" rel="noopener" class="project-btn secondary">GITHUB REPO ↗</a>
+            </div>
+          </div>
+
+          <!-- Project Card 4: Algo Trade Upstox -->
+          <div class="glass-panel project-card" data-category="github apps" data-project-id="algo-trade">
+            <div class="project-header">
+              <span class="project-category">QUANTITATIVE FINANCE</span>
+              <span class="project-year">2025</span>
+            </div>
+            <h3 class="project-title">ALGO TRADE UPSTOX</h3>
+            <p class="project-summary">
+              Automated algorithmic trading engine interfacing with Upstox v2 broker APIs for sub-millisecond execution and algorithmic strategy execution.
+            </p>
+            <div class="project-tech-stack">
+              <span>Python</span>
+              <span>Upstox API</span>
+              <span>AsyncIO</span>
+              <span>Pandas</span>
+            </div>
+            <div class="project-footer">
+              <button type="button" class="project-btn primary open-case-study" data-project-id="algo-trade">CASE STUDY ↗</button>
+              <a href="https://github.com/pranavsonar802-max" target="_blank" rel="noopener" class="project-btn secondary">GITHUB REPO ↗</a>
+            </div>
+          </div>
+
+          <!-- Project Card 5: Nebula AI -->
+          <div class="glass-panel project-card" data-category="webgl apps" data-project-id="nebula-ai">
+            <div class="project-header">
+              <span class="project-category">GENERATIVE AI STUDIO</span>
+              <span class="project-year">2026</span>
+            </div>
+            <h3 class="project-title">NEBULA AI</h3>
+            <p class="project-summary">
+              Multimodal generative studio with real-time latent space exploration, sub-100ms model inference streaming, and dynamic WebGL nodes.
+            </p>
+            <div class="project-tech-stack">
+              <span>Next.js</span>
+              <span>WebGL</span>
+              <span>PyTorch</span>
+              <span>WebSockets</span>
+            </div>
+            <div class="project-footer">
+              <button type="button" class="project-btn primary open-case-study" data-project-id="nebula-ai">CASE STUDY ↗</button>
+              <a href="https://github.com/pranavsonar802-max" target="_blank" rel="noopener" class="project-btn secondary">GITHUB ↗</a>
+            </div>
+          </div>
+
+          <!-- Project Card 6: Chronos Engine -->
+          <div class="glass-panel project-card" data-category="webgl apps" data-project-id="chronos">
+            <div class="project-header">
+              <span class="project-category">FINANCIAL ANALYTICS</span>
+              <span class="project-year">2025</span>
+            </div>
+            <h3 class="project-title">CHRONOS ENGINE</h3>
+            <p class="project-summary">
+              Ultra-high throughput 3D order book and market depth visualizer rendering 100,000+ live tick events/sec with zero frame drops.
+            </p>
+            <div class="project-tech-stack">
+              <span>Canvas 2D</span>
+              <span>Three.js</span>
+              <span>WebAssembly</span>
+              <span>Go</span>
+            </div>
+            <div class="project-footer">
+              <button type="button" class="project-btn primary open-case-study" data-project-id="chronos">CASE STUDY ↗</button>
+              <a href="https://github.com/pranavsonar802-max" target="_blank" rel="noopener" class="project-btn secondary">GITHUB ↗</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CHAPTER 04: SKILLS & TECH STACK -->
+    <section class="story-chapter" id="chapter-skills-sec" data-range="226-270">
+      <div class="chapter-backdrop"></div>
+      
+      <div class="chapter-content-grid">
+        <!-- Left Side: Tech Matrix -->
+        <div class="glass-panel panel-left">
+          <div class="panel-header">
+            <span class="section-tag">// 03 — CAPABILITIES MATRIX</span>
+            <span class="chapter-num">04 / 05</span>
+          </div>
+          <h2 class="panel-title">TECHNOLOGY ARSENAL</h2>
+
+          <!-- Interactive Skill Category Filter Tabs -->
+          <div class="skill-tabs-bar" id="skill-tabs-bar">
+            <button class="skill-tab active" data-skill-filter="all" type="button">ALL TECH</button>
+            <button class="skill-tab" data-skill-filter="frontend" type="button">FRONTEND &amp; 3D</button>
+            <button class="skill-tab" data-skill-filter="backend" type="button">BACKEND &amp; DATA</button>
+            <button class="skill-tab" data-skill-filter="systems" type="button">SYSTEMS &amp; DEVOPS</button>
+          </div>
+          
+          <div class="skills-group" data-skill-group="frontend">
+            <div class="skills-group-title">FRONTEND &amp; CREATIVE 3D</div>
+            <div class="skills-chip-row">
+              <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript" target="_blank" rel="noopener" class="skill-badge highlight skill-link" data-category="frontend" title="Open Official JavaScript Documentation">JavaScript (ESNext) ↗</a>
+              <a href="https://www.typescriptlang.org/" target="_blank" rel="noopener" class="skill-badge highlight skill-link" data-category="frontend" title="Open Official TypeScript Website">TypeScript ↗</a>
+              <a href="https://nextjs.org/" target="_blank" rel="noopener" class="skill-badge skill-link" data-category="frontend" title="Open Official Next.js Website">React &amp; Next.js ↗</a>
+              <a href="https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API" target="_blank" rel="noopener" class="skill-badge highlight skill-link" data-category="frontend" title="Open Official HTML5 Canvas Documentation">HTML5 Canvas 2D ↗</a>
+              <a href="https://threejs.org/" target="_blank" rel="noopener" class="skill-badge skill-link" data-category="frontend" title="Open Official Three.js Website">WebGL / Three.js ↗</a>
+              <a href="https://tailwindcss.com/" target="_blank" rel="noopener" class="skill-badge skill-link" data-category="frontend" title="Open Official Tailwind CSS Website">CSS3 / Tailwind ↗</a>
+              <a href="https://gsap.com/" target="_blank" rel="noopener" class="skill-badge skill-link" data-category="frontend" title="Open Official GSAP Website">GSAP / Physics ↗</a>
+              <a href="https://www.figma.com/" target="_blank" rel="noopener" class="skill-badge skill-link" data-category="frontend" title="Open Official Figma Website">Figma to Code ↗</a>
+            </div>
+          </div>
+
+          <div class="skills-group" data-skill-group="backend">
+            <div class="skills-group-title">BACKEND, SYSTEMS &amp; INFRASTRUCTURE</div>
+            <div class="skills-chip-row">
+              <a href="https://nodejs.org/" target="_blank" rel="noopener" class="skill-badge highlight skill-link" data-category="backend" title="Open Official Node.js Website">Node.js / Express ↗</a>
+              <a href="https://fastapi.tiangolo.com/" target="_blank" rel="noopener" class="skill-badge skill-link" data-category="backend" title="Open Official FastAPI Website">Python / FastAPI ↗</a>
+              <a href="https://kotlinlang.org/" target="_blank" rel="noopener" class="skill-badge highlight skill-link" data-category="systems" title="Open Official Kotlin Website">Kotlin (Native) ↗</a>
+              <a href="https://developer.mozilla.org/en-US/docs/Web/API/WebSockets_API" target="_blank" rel="noopener" class="skill-badge skill-link" data-category="backend" title="Open Official WebSockets Documentation">REST &amp; WebSockets ↗</a>
+              <a href="https://www.postgresql.org/" target="_blank" rel="noopener" class="skill-badge highlight skill-link" data-category="backend" title="Open Official PostgreSQL Website">PostgreSQL &amp; Redis ↗</a>
+              <a href="https://www.docker.com/" target="_blank" rel="noopener" class="skill-badge skill-link" data-category="systems" title="Open Official Docker Website">Docker &amp; Linux ↗</a>
+              <a href="https://git-scm.com/" target="_blank" rel="noopener" class="skill-badge skill-link" data-category="systems" title="Open Official Git Website">Git &amp; CI/CD ↗</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Side: 2026 Education AI Assistant & Engineering Principles -->
+                <!-- Right Side: Engineering Principles & Standards -->
+        <div class="glass-panel panel-right">
+          <div class="panel-header">
+            <span class="panel-tag">// ENGINEERING PILLARS</span>
+            <span class="panel-status-indicator">STANDARDS</span>
+          </div>
+          
+          <div class="pillar-list">
+            <div class="pillar-item">
+              <div class="pillar-icon">🏎️</div>
+              <div class="pillar-text">
+                <div class="pillar-title">60 FPS Guaranteed Fluidity</div>
+                <div class="pillar-desc">Sub-16ms render budgets, offscreen rasterization, and hardware-accelerated composite layers.</div>
+              </div>
+            </div>
+
+            <div class="pillar-item">
+              <div class="pillar-icon">⚡</div>
+              <div class="pillar-text">
+                <div class="pillar-title">Zero Dependency Lean Core</div>
+                <div class="pillar-desc">Custom optimized engines avoiding bloated libraries to ensure blistering load times and maximum control.</div>
+              </div>
+            </div>
+
+            <div class="pillar-item">
+              <div class="pillar-icon">🎯</div>
+              <div class="pillar-text">
+                <div class="pillar-title">Accessibility &amp; Responsive Depth</div>
+                <div class="pillar-desc">Seamlessly engineered for mobile touch swiping, keyboard navigation, high-DPI screens, and screen readers.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CHAPTER 05: CONTACT & TRANSMISSION -->
+    <section class="story-chapter" id="chapter-contact-sec" data-range="271-300">
+      <div class="chapter-backdrop"></div>
+      
+      <div class="chapter-content-grid">
+        <!-- Left Side: Connect Info -->
+        <div class="glass-panel panel-left">
+          <div class="panel-header">
+            <span class="section-tag">// 04 — TRANSMISSION</span>
+            <span class="chapter-num">05 / 05</span>
+          </div>
+          <h2 class="panel-title">LET'S BUILD SOMETHING EXTRAORDINARY</h2>
+          <p class="panel-description">
+            Looking for a creative full-stack engineer who builds web applications that look world-class and run with razor-sharp speed? 
+            Let's discuss your next project, architecture, or full-time opportunities.
+          </p>
+
+          <!-- Owner Verified Contact & Social Channels Card -->
+          <div class="owner-profile-card">
+            <div class="owner-profile-header">
+              <div class="owner-avatar-pill">PS</div>
+              <div class="owner-profile-text">
+                <span class="owner-name-title">PRANAV SONAR</span>
+                <span class="owner-role-sub">CREATIVE TECHNOLOGIST &amp; FULL-STACK DEVELOPER</span>
+              </div>
+            </div>
+
+            <div class="owner-contact-grid">
+              <!-- Mobile Phone Call -->
+              <a href="tel:+919284166996" class="owner-contact-item phone-item" title="Call Pranav Sonar Directly">
+                <span class="item-icon">📞</span>
+                <div class="item-meta">
+                  <span class="item-label">MOBILE PHONE</span>
+                  <span class="item-val">+91 9284166996</span>
+                </div>
+                <span class="item-action">DIAL ↗</span>
+              </a>
+
+              <!-- WhatsApp Chat -->
+              <a href="https://wa.me/919284166996" target="_blank" rel="noopener" class="owner-contact-item whatsapp-item" title="Chat with Pranav on WhatsApp">
+                <span class="item-icon">💬</span>
+                <div class="item-meta">
+                  <span class="item-label">WHATSAPP CHAT</span>
+                  <span class="item-val">+91 9284166996</span>
+                </div>
+                <span class="item-action">CHAT ↗</span>
+              </a>
+
+              <!-- YouTube Channel -->
+              <a href="https://www.youtube.com/@kingofshort7004" target="_blank" rel="noopener" class="owner-contact-item youtube-item" title="Open YouTube Channel @kingofshort7004">
+                <span class="item-icon">▶</span>
+                <div class="item-meta">
+                  <span class="item-label">YOUTUBE CHANNEL</span>
+                  <span class="item-val">@kingofshort7004</span>
+                </div>
+                <span class="item-action">WATCH ↗</span>
+              </a>
+
+              <!-- Instagram Account -->
+              <a href="https://www.instagram.com/px_backlight777?obrf=emptbm5idWxnNDV5" target="_blank" rel="noopener" class="owner-contact-item instagram-item" title="Open Instagram Account @px_backlight777">
+                <span class="item-icon">📸</span>
+                <div class="item-meta">
+                  <span class="item-label">INSTAGRAM</span>
+                  <span class="item-val">@px_backlight777</span>
+                </div>
+                <span class="item-action">FOLLOW ↗</span>
+              </a>
+            </div>
+          </div>
+
+          <!-- Interactive One-Click Copy Email Pill -->
+          <div class="email-copy-wrapper">
+            <button class="email-copy-btn" id="copy-email-btn" type="button" title="Click to copy verified email address">
+              <span class="copy-icon">✉</span>
+              <span class="copy-address" id="email-address-text">pranavsonar802@gmail.com</span>
+              <span class="copy-action-badge" id="copy-badge">CLICK TO COPY</span>
+            </button>
+          </div>
+
+          <!-- Social Channels Linked Directly to Real Profiles -->
+          <div class="social-links-row">
+            <a href="https://www.youtube.com/@kingofshort7004" target="_blank" rel="noopener" class="social-pill youtube-pill" title="Watch Pranav Sonar on YouTube (@kingofshort7004)">
+              <span>▶ YOUTUBE</span>
+              <span class="arrow-up">↗</span>
+            </a>
+            <a href="https://www.instagram.com/px_backlight777?obrf=emptbm5idWxnNDV5" target="_blank" rel="noopener" class="social-pill instagram-pill" title="Follow Pranav Sonar on Instagram (@px_backlight777)">
+              <span>📸 @px_backlight777</span>
+              <span class="arrow-up">↗</span>
+            </a>
+            <a href="https://leetcode.com/u/pxprnavvv2006/" target="_blank" rel="noopener" class="social-pill leetcode-pill" title="LeetCode Profile (@pxprnavvv2006)">
+              <span>🟡 LEETCODE</span>
+              <span class="arrow-up">↗</span>
+            </a>
+            <a href="https://www.geeksforgeeks.org/profile/pranavsod53v?tab=activity" target="_blank" rel="noopener" class="social-pill gfg-pill" title="GeeksforGeeks Profile (@pranavsod53v)">
+              <span>🟢 GEEKSFORGEEKS</span>
+              <span class="arrow-up">↗</span>
+            </a>
+            <a href="tel:+919284166996" class="social-pill phone-pill" title="Call Pranav Sonar (+91 9284166996)">
+              <span>📞 9284166996</span>
+              <span class="arrow-up">↗</span>
+            </a>
+            <a href="https://github.com/pranavsonar802-max" target="_blank" rel="noopener" class="social-pill" title="GitHub (@pranavsonar802-max)">
+              <span>GITHUB</span>
+              <span class="arrow-up">↗</span>
+            </a>
+            <a href="https://github.com/pranavsonar802-max?tab=repositories" target="_blank" rel="noopener" class="social-pill highlight-pill" title="Directly Open All GitHub Repositories">
+              <span>REPOSITORIES</span>
+              <span class="arrow-up">↗</span>
+            </a>
+          </div>
+
+          <!-- Live Database Transmissions Trigger & Owner Dossier Desk -->
+          <div class="database-status-box">
+            <button type="button" class="db-view-btn" id="db-view-btn" title="Inspect messages saved in database">
+              <span class="db-status-dot"></span>
+              <span>VIEW DATABASE TRANSMISSIONS (<span id="db-msg-count">0</span>)</span>
+            </button>
+            <button type="button" class="db-view-btn owner-dossier-desk-btn" id="owner-dossier-btn" title="Inspect official 2x transmission audit dossiers & approve permissions">
+              <span class="db-status-dot purple"></span>
+              <span>🛡️ OWNER DOSSIER &amp; APPROVAL DESK</span>
+            </button>
+          </div>
+
+          <!-- Engineering Four Pillars & Interactive Mini AI Assistant Card -->
+          <div class="glass-panel contact-pillars-card" id="contact-pillars-card">
+            <div class="panel-header card-panel-header">
+              <div class="pillars-card-tabs">
+                <button type="button" class="pillars-card-tab active" id="tab-four-pillars">
+                  <span>// ENGINEERING PILLARS</span>
+                </button>
+                <button type="button" class="pillars-card-tab" id="tab-mini-ai">
+                  <span class="pulse-point"></span>
+                  <span>// AI COPILOT</span>
+                </button>
+              </div>
+              <span class="panel-status-indicator" id="pillars-status-indicator">STANDARDS</span>
+            </div>
+
+            <!-- VIEW 1: Four Engineering Pillars (Matching Image 1) -->
+            <div class="pillars-view active" id="view-four-pillars">
+              <div class="pillar-list">
+                <div class="pillar-item">
+                  <div class="pillar-icon">🏎️</div>
+                  <div class="pillar-text">
+                    <div class="pillar-title">60 FPS Guaranteed Fluidity</div>
+                    <div class="pillar-desc">Sub-16ms render budgets, offscreen rasterization, and hardware-accelerated composite layers.</div>
+                  </div>
+                </div>
+
+                <div class="pillar-item">
+                  <div class="pillar-icon">⚡</div>
+                  <div class="pillar-text">
+                    <div class="pillar-title">Zero Dependency Lean Core</div>
+                    <div class="pillar-desc">Custom optimized engines avoiding bloated libraries to ensure blistering load times and maximum control.</div>
+                  </div>
+                </div>
+
+                <div class="pillar-item">
+                  <div class="pillar-icon">🎯</div>
+                  <div class="pillar-text">
+                    <div class="pillar-title">Accessibility &amp; Responsive Depth</div>
+                    <div class="pillar-desc">Seamlessly engineered for mobile touch swiping, keyboard navigation, high-DPI screens, and screen readers.</div>
+                  </div>
+                </div>
+
+                <div class="pillar-item">
+                  <div class="pillar-icon">🌐</div>
+                  <div class="pillar-text">
+                    <div class="pillar-title">Distributed Full-Stack Core</div>
+                    <div class="pillar-desc">Low-latency Node.js microservices, resilient WebSockets, real-time caching, and high-concurrency event loops.</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- VIEW 2: Compact Mini AI Chatbot Assistant -->
+            <div class="pillars-view" id="view-mini-ai" style="display: none;">
+              <div class="mini-ai-chips" id="mini-ai-chips">
+                <button type="button" class="mini-ai-chip">🚀 Projects</button>
+                <button type="button" class="mini-ai-chip">🛠️ Tech Stack</button>
+                <button type="button" class="mini-ai-chip">🎓 JSPM 2026</button>
+                <button type="button" class="mini-ai-chip">💼 Hire Pranav</button>
+              </div>
+              <div class="mini-ai-messages" id="mini-ai-messages">
+                <!-- Dynamically populated messages -->
+              </div>
+              <div class="mini-ai-typing" id="mini-ai-typing" style="display: none;">
+                <span class="typing-dot"></span>
+                <span class="typing-dot"></span>
+                <span class="typing-dot"></span>
+                <span class="typing-label">AI analyzing...</span>
+              </div>
+              <form class="mini-ai-form" id="mini-ai-form">
+                <input type="text" id="mini-ai-input" placeholder="Ask anything about Pranav, projects, skills..." autocomplete="off">
+                <button type="submit" id="mini-ai-send-btn" title="Send query">➔</button>
+              </form>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Side: Direct Message Form -->
+        <div class="glass-panel panel-right">
+          <div class="panel-header">
+            <span class="section-tag">// INSTANT MESSAGE (CONNECTED TO DB API)</span>
+            <span class="panel-status-indicator">LIVE API</span>
+          </div>
+
+          <form class="contact-form" id="contact-form" novalidate>
+            <div class="form-row">
+              <div class="form-field">
+                <label for="contact-name">YOUR NAME</label>
+                <input type="text" id="contact-name" name="name" placeholder="John Doe" required autocomplete="name">
+              </div>
+              <div class="form-field">
+                <label for="contact-email">YOUR EMAIL</label>
+                <input type="email" id="contact-email" name="email" placeholder="john@example.com" required autocomplete="email">
+              </div>
+            </div>
+
+            <div class="form-field">
+              <div class="field-label-row">
+                <label for="contact-message">PROJECT BRIEF / MESSAGE</label>
+                <span class="char-counter" id="char-counter">0 / 500</span>
+              </div>
+              <textarea id="contact-message" name="message" rows="3" maxlength="500" placeholder="Tell me about your vision, timeline, and goals..." required></textarea>
+            </div>
+
+            <button type="submit" class="form-submit-btn" id="submit-form-btn">
+              <span class="submit-text">SEND TRANSMISSION</span>
+              <span class="submit-icon">🚀</span>
+            </button>
+
+            <div class="form-feedback" id="form-feedback"></div>
+          </form>
+
+          <!-- Section 1 & 4: Visitor Access & Approval Status Box -->
+          <div class="visitor-approval-card" id="visitor-approval-card" style="display: none; margin-top: 18px; padding: 18px; background: rgba(15, 23, 42, 0.7); border: 1px solid var(--accent-purple-light); border-radius: 12px; box-shadow: 0 0 25px rgba(168, 85, 247, 0.2);">
+            <div class="approval-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: wrap; gap: 8px;">
+              <span class="approval-badge pending" id="approval-status-badge" style="font-family: var(--font-mono); font-size: 0.7rem; font-weight: 700; color: #38bdf8; background: rgba(56, 189, 248, 0.15); border: 1px solid rgba(56, 189, 248, 0.4); padding: 4px 10px; border-radius: 20px;">⏳ PENDING OWNER APPROVAL</span>
+              <span class="approval-id-tag" id="approval-req-id" style="font-family: var(--font-mono); font-size: 0.7rem; color: var(--accent-purple-light); font-weight: 700;">REQ-20261010-8472</span>
+            </div>
+            
+            <h3 class="approval-headline" id="approval-headline" style="font-family: var(--font-display); font-size: 1.1rem; font-weight: 800; color: #ffffff; margin-bottom: 6px;">TRANSMISSION RECEIVED</h3>
+            <p class="approval-desc" id="approval-desc" style="font-size: 0.82rem; color: var(--text-secondary); line-height: 1.45; margin-bottom: 12px;">
+              Your message has been securely submitted to Pranav Sonar. Your request is awaiting owner approval.
+            </p>
+
+            <!-- Direct Multi-Channel Owner Reach Box -->
+            <div class="instant-owner-reach-box" style="margin: 12px 0 16px; padding: 12px; background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(168, 85, 247, 0.25); border-radius: 8px;">
+              <div style="font-family: var(--font-mono); font-size: 0.7rem; color: #c084fc; font-weight: 700; margin-bottom: 6px; display: flex; align-items: center; gap: 6px;">
+                <span style="display:inline-block; width:8px; height:8px; background:#22c55e; border-radius:50%; box-shadow:0 0 8px #22c55e;"></span>
+                FAST DIRECT REACH TO OWNER (PRANAV SONAR)
+              </div>
+              <p style="font-size: 0.76rem; color: #94a3b8; margin-bottom: 10px; line-height: 1.4;">
+                To guarantee your transmission reaches Pranav Sonar immediately on his phone or Gmail for instant review:
+              </p>
+              <div class="approval-fast-reach-row" style="display: flex; gap: 8px; flex-wrap: wrap;">
+                <a href="https://wa.me/919284166996" target="_blank" rel="noopener" class="form-action-pill whatsapp-direct-btn" id="approval-wa-link" style="background: rgba(34, 197, 94, 0.2); border-color: #22c55e; color: #4ade80; text-decoration: none; font-size: 0.75rem; font-weight: 700;">
+                  <span>💬 NOTIFY ON WHATSAPP (+91 9284166996)</span>
+                </a>
+                <a href="mailto:pranavsonar4444@gmail.com" target="_blank" rel="noopener" class="form-action-pill gmail-direct-btn" id="approval-gmail-link" style="background: rgba(239, 68, 68, 0.15); border-color: #f87171; color: #fca5a5; text-decoration: none; font-size: 0.75rem; font-weight: 700;">
+                  <span>✉ SEND DIRECT TO GMAIL</span>
+                </a>
+              </div>
+            </div>
+            
+            <div class="approval-actions-row" style="display: flex; gap: 10px; flex-wrap: wrap;">
+              <button type="button" class="form-action-pill owner-quick-btn" id="owner-quick-approve-btn" style="background: rgba(234, 179, 8, 0.2); border-color: #eab308; color: #fef08a; font-weight: 800; box-shadow: 0 0 15px rgba(234, 179, 8, 0.25);">
+                <span>⚡ OWNER 1-CLICK APPROVE (pranav4444)</span>
+              </button>
+              <button type="button" class="form-action-pill report-btn" id="check-status-btn" style="background: rgba(147, 51, 234, 0.2); border-color: var(--accent-purple-light); color: #ffffff;">
+                <span>↻ CHECK APPROVAL STATUS</span>
+              </button>
+              <button type="button" class="form-action-pill report-btn" id="continue-access-btn" style="display: none; background: #22c55e; border-color: #4ade80; color: #ffffff; font-weight: 800; box-shadow: 0 0 20px rgba(34, 197, 94, 0.4);">
+                <span>CONTINUE TO WEBSITE ⟶</span>
+              </button>
+              <button type="button" class="form-action-pill gmail-btn" id="new-transmission-btn" style="background: rgba(255, 255, 255, 0.05); color: var(--text-secondary);">
+                <span>SEND ANOTHER MESSAGE</span>
+              </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- Private JSPM ERP Gatekeeper & Case Study Modal -->
+  <div class="portfolio-modal" id="jspm-erp-modal" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="modal-backdrop" id="jspm-backdrop"></div>
+    <div class="modal-dialog erp-dialog glass-panel">
+      
+      <!-- Top Modal Header -->
+      <div class="modal-header">
+        <div class="modal-tag erp-modal-tag">// RESTRICTED ACCESS — JSPM ERP &amp; CAMPUS MOODLE</div>
+        <button type="button" class="modal-close-btn" id="jspm-close-btn" aria-label="Close dialog">✕</button>
+      </div>
+
+      <!-- VIEW 1: Access Request & Sign In Gatekeeper -->
+      <div class="erp-modal-view" id="erp-gatekeeper-view">
+        <div class="erp-security-banner">
+          <div class="security-shield-icon">🔒</div>
+          <div class="security-banner-text">
+            <h4>RESTRICTED INSTITUTIONAL CASE STUDY</h4>
+            <p>
+              This enterprise case study contains proprietary architecture, Moodle integration schemas, and security benchmarks for <strong>JSPM ERP</strong>. Access requires authentication. Your details (Name, Email ID, Username, and Password) will be transmitted directly to the owner (<strong>pranavsonar4444@gmail.com</strong>) and the case study unlocks upon approval.
+            </p>
+          </div>
+        </div>
+
+        <!-- Mode Toggle Tabs: Request Access vs Sign In -->
+        <div class="erp-mode-tabs">
+          <button type="button" class="erp-mode-btn active" id="erp-tab-request">REQUEST ACCESS / REGISTER</button>
+          <button type="button" class="erp-mode-btn" id="erp-tab-login">DIRECT SIGN IN</button>
+        </div>
+
+        <!-- Form: Request Access -->
+        <form class="erp-auth-form" id="erp-request-form">
+          <div class="form-row">
+            <div class="form-field">
+              <label for="erp-name">YOUR FULL NAME</label>
+              <input type="text" id="erp-name" placeholder="Dr. Rajesh Sharma" required autocomplete="name">
+            </div>
+            <div class="form-field">
+              <label for="erp-email">YOUR EMAIL ADDRESS</label>
+              <input type="email" id="erp-email" placeholder="visitor@institution.edu" required autocomplete="email">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-field">
+              <label for="erp-username">DESIRED USERNAME</label>
+              <input type="text" id="erp-username" placeholder="rsharma_eval" required autocomplete="username">
+            </div>
+            <div class="form-field">
+              <label for="erp-password">PASSWORD / ACCESS KEY</label>
+              <input type="password" id="erp-password" placeholder="••••••••••••" required autocomplete="current-password">
+            </div>
+          </div>
+
+          <div class="form-field">
+            <label for="erp-designation">ORGANIZATION / PURPOSE OF REVIEW</label>
+            <input type="text" id="erp-designation" placeholder="e.g. Technical Recruiter / Faculty Auditor / Systems Review">
+          </div>
+
+          <div class="erp-form-notice">
+            <span>ℹ️ Submission notifies owner (<strong>pranavsonar4444@gmail.com</strong>) with your full credentials.</span>
+          </div>
+
+          <button type="submit" class="form-submit-btn erp-submit-btn" id="erp-submit-request-btn">
+            <span>TRANSMIT CREDENTIALS TO OWNER &amp; REQUEST ACCESS</span>
+            <span>🚀</span>
+          </button>
+        </form>
+
+        <!-- Form: Direct Sign In (Hidden by default) -->
+        <form class="erp-auth-form" id="erp-login-form" style="display: none;">
+          <div class="form-field">
+            <label for="erp-login-username">USERNAME</label>
+            <input type="text" id="erp-login-username" placeholder="Enter approved username" required>
+          </div>
+          <div class="form-field">
+            <label for="erp-login-password">PASSWORD</label>
+            <input type="password" id="erp-login-password" placeholder="••••••••••••" required>
+          </div>
+          <button type="submit" class="form-submit-btn erp-submit-btn" id="erp-submit-login-btn">
+            <span>SIGN IN TO JSPM ERP</span>
+            <span>🔓</span>
+          </button>
+        </form>
+
+        <div class="erp-feedback" id="erp-feedback"></div>
+      </div>
+
+      <!-- VIEW 2: Pending Approval Radar Screen -->
+      <div class="erp-modal-view" id="erp-pending-view" style="display: none;">
+        <div class="pending-radar-box">
+          <div class="radar-pulse"></div>
+          <div class="pending-icon">📡</div>
+          <h3 class="pending-title">CREDENTIALS TRANSMITTED TO OWNER</h3>
+          <p class="pending-sub">
+            Institutional verification alert successfully dispatched to <strong>pranavsonar4444@gmail.com</strong>.
+            Awaiting owner permission approval to grant entry.
+          </p>
+        </div>
+
+        <div class="credentials-summary-card">
+          <div class="summary-card-header">// TRANSMITTED VISITOR CREDENTIALS</div>
+          <div class="summary-row">
+            <span class="lbl">Visitor Name:</span>
+            <span class="val" id="summary-name">—</span>
+          </div>
+          <div class="summary-row">
+            <span class="lbl">Visitor Email:</span>
+            <span class="val" id="summary-email">—</span>
+          </div>
+          <div class="summary-row">
+            <span class="lbl">Username:</span>
+            <span class="val" id="summary-user">—</span>
+          </div>
+          <div class="summary-row">
+            <span class="lbl">Password:</span>
+            <span class="val" id="summary-pass">—</span>
+          </div>
+          <div class="summary-row">
+            <span class="lbl">Notified Owner:</span>
+            <span class="val highlight-owner">pranavsonar4444@gmail.com</span>
+          </div>
+          <div class="summary-row">
+            <span class="lbl">Status:</span>
+            <span class="val status-pending" id="summary-status">⏳ PENDING OWNER APPROVAL</span>
+          </div>
+        </div>
+
+        <div class="pending-actions-row">
+          <button type="button" class="project-btn secondary" id="check-approval-btn">↻ REFRESH STATUS</button>
+          <button type="button" class="project-btn primary" id="simulate-approve-btn">OWNER PERMISSION APPROVAL (pranav4444) ✓</button>
+        </div>
+      </div>
+
+      <!-- VIEW 3: Unlocked JSPM ERP Case Study & Live Architecture -->
+      <div class="erp-modal-view" id="erp-unlocked-view" style="display: none;">
+        <div class="unlocked-header-badge">
+          <span class="status-dot green"></span>
+          <span>PERMISSION GRANTED BY OWNER (pranavsonar4444@gmail.com)</span>
+          <span class="session-user-badge" id="erp-active-user-badge">USER: ACTIVE</span>
+        </div>
+
+        <h2 class="modal-title erp-modal-title">JSPM ERP &amp; CAMPUS MOODLE SYSTEM</h2>
+        <p class="modal-desc">
+          Unified Institutional Enterprise Resource Planning (ERP) platform and Campus Moodle LMS engineered to coordinate academic operations, high-volume examination evaluations, and automated fee bookkeeping for 15,000+ campus learners across Jayawant Shikshan Prasarak Mandal institutes.
+        </p>
+
+        <!-- REAL OFFICIAL JSPM ENTERPRISE MOODLE PORTALS -->
+        <div class="real-erp-portals-section">
+          <div class="modal-section-title">// OFFICIAL ACTIVE JSPM CAMPUS MOODLE PORTAL</div>
+          <div class="real-erp-portals-grid" style="grid-template-columns: 1fr;">
+            
+            <!-- Real Portal: Official Campus Moodle LMS -->
+            <div class="real-portal-card primary-portal">
+              <div class="portal-card-top">
+                <span class="portal-status-dot active"></span>
+                <span class="portal-badge">OFFICIAL MOODLE LMS (e-Nirmiti)</span>
+              </div>
+              <h4 class="portal-title">JSPM CAMPUS MOODLE LMS (e-Nirmiti)</h4>
+              <p class="portal-desc">
+                Academic Learning Management System conducting live semester evaluations, online objective testing, assignment submissions, and grading synchronizations across Jayawant Shikshan Prasarak Mandal institutes.
+              </p>
+              <div class="portal-url-tag">https://lms.jspmicoer.edu.in/ &amp; https://lms.jspmjscoe.edu.in/</div>
+              <div class="portal-btn-pair">
+                <a href="https://lms.jspmicoer.edu.in/" target="_blank" rel="noopener" class="project-btn primary portal-launch-btn">
+                  <span>LAUNCH MOODLE (ICOER) ↗</span>
+                </a>
+                <a href="https://lms.jspmjscoe.edu.in/" target="_blank" rel="noopener" class="project-btn primary portal-launch-btn">
+                  <span>LAUNCH MOODLE (JSCOE) ↗</span>
+                </a>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Live Metrics Bar -->
+        <div class="erp-telemetry-grid">
+          <div class="telemetry-box">
+            <span class="telemetry-num">15,400+</span>
+            <span class="telemetry-lbl">Enrolled Learners</span>
+          </div>
+          <div class="telemetry-box">
+            <span class="telemetry-num">&lt;45ms</span>
+            <span class="telemetry-lbl">P99 Query Latency</span>
+          </div>
+          <div class="telemetry-box">
+            <span class="telemetry-num">99.98%</span>
+            <span class="telemetry-lbl">System Availability</span>
+          </div>
+          <div class="telemetry-box">
+            <span class="telemetry-num">10K/min</span>
+            <span class="telemetry-lbl">Peak Exam Submissions</span>
+          </div>
+        </div>
+
+        <div class="modal-section-title">CORE SYSTEM ARCHITECTURE &amp; HIGHLIGHTS</div>
+        <div class="modal-highlights">
+          <div class="modal-highlight-item">
+            <strong>Moodle LMS Bi-Directional Bridge:</strong> Real-time automated synchronization of student courses, grading rubrics, exam token validation, and assignment submission telemetry using custom webhook workers.
+          </div>
+          <div class="modal-highlight-item">
+            <strong>High-Concurrency Database Layer:</strong> Clustered PostgreSQL with read-replicas and distributed Redis key-value caching handling 10,000+ simultaneous exam submits with zero data loss or contention.
+          </div>
+          <div class="modal-highlight-item">
+            <strong>Institutional Role-Based Access Control (RBAC):</strong> Multi-tier permission matrices isolating Campus Directors, Department Heads (HOD), Teaching Faculty, and Students.
+          </div>
+          <div class="modal-highlight-item">
+            <strong>Automated Academic &amp; Fee Ledger:</strong> Tamper-evident transaction auditing with instant push alerts, receipt generation, and real-time attendance tracking algorithms.
+          </div>
+        </div>
+
+        <div class="modal-section-title">TECHNOLOGY STACK</div>
+        <div class="modal-stack-chips">
+          <span class="tag-chip">Node.js / Express</span>
+          <span class="tag-chip">Moodle LMS API</span>
+          <span class="tag-chip">PostgreSQL</span>
+          <span class="tag-chip">Redis Cache</span>
+          <span class="tag-chip">WebSockets</span>
+          <span class="tag-chip">Docker</span>
+          <span class="tag-chip">Linux (Ubuntu LTS)</span>
+          <span class="tag-chip">Nginx Reverse Proxy</span>
+        </div>
+
+        <!-- OWNER ACCESS DOSSIER & VISITOR AUDIT LOG (pranavsonar4444@gmail.com) -->
+        <div class="erp-owner-audit-section" id="erp-owner-audit-section">
+          <div class="modal-section-title">// OWNER DOSSIER &amp; VISITOR ACCESS AUDIT LOG</div>
+          <div class="erp-dossier-panel">
+            <div class="dossier-top-bar">
+              <span class="live-pulse-badge"><span class="pulse-point"></span> CONFIDENTIAL DOSSIER</span>
+              <span class="dossier-owner-target">OWNER: pranavsonar4444@gmail.com</span>
+              <button type="button" class="dossier-refresh-btn" id="erp-dossier-refresh-btn">↻ REFRESH LOGS</button>
+            </div>
+            <p class="dossier-explainer">
+              Restricted record: Displays all visitors who accessed the website with submitted credentials, timestamp, and contact information.
+            </p>
+            <div class="erp-dossier-list" id="erp-dossier-list">
+              <div class="loading-spinner">Loading access records...</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="project-btn secondary" id="erp-lock-btn">🔒 LOCK PORTAL / LOG OUT</button>
+          <a href="mailto:pranavsonar4444@gmail.com" class="project-btn primary">CONTACT PRANAV SONAR (OWNER) ✉</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Interactive Case Study Modal -->
+  <div class="portfolio-modal" id="case-study-modal" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="modal-backdrop" id="case-study-backdrop"></div>
+    <div class="modal-dialog glass-panel">
+      <div class="modal-header">
+        <div class="modal-tag" id="modal-project-category">// CASE STUDY</div>
+        <button type="button" class="modal-close-btn" id="modal-close-btn" aria-label="Close dialog">✕</button>
+      </div>
+      <h2 class="modal-title" id="modal-project-title">PROJECT TITLE</h2>
+      <p class="modal-desc" id="modal-project-desc">Project details and technical architecture explanation.</p>
+      
+      <div class="modal-section-title">TECHNICAL ARCHITECTURE &amp; HIGHLIGHTS</div>
+      <div class="modal-highlights" id="modal-project-highlights">
+        <!-- Injected via JavaScript -->
+      </div>
+
+      <div class="modal-section-title">TECH STACK</div>
+      <div class="modal-stack-chips" id="modal-project-stack">
+        <!-- Injected via JavaScript -->
+      </div>
+
+      <div class="modal-actions">
+        <a href="#" target="_blank" rel="noopener" class="project-btn primary" id="modal-live-link">OPEN LIVE DEMO ↗</a>
+        <a href="#" target="_blank" rel="noopener" class="project-btn secondary" id="modal-github-link">VIEW ON GITHUB ↗</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Saved Transmissions (Database) Modal -->
+  <div class="portfolio-modal" id="messages-modal" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="modal-backdrop" id="messages-backdrop"></div>
+    <div class="modal-dialog messages-dialog glass-panel">
+      <div class="modal-header">
+        <div class="modal-tag">// BACKEND DATABASE TRANSMISSIONS (REST API)</div>
+        <div class="modal-header-actions">
+          <button type="button" class="modal-action-btn" id="db-refresh-btn" title="Refresh messages from database">↻ REFRESH</button>
+          <button type="button" class="modal-action-btn danger" id="db-clear-btn" title="Clear messages">🗑 CLEAR</button>
+          <button type="button" class="modal-close-btn" id="messages-close-btn" aria-label="Close dialog">✕</button>
+        </div>
+      </div>
+      <div class="messages-container" id="messages-list-container">
+        <div class="loading-spinner">Loading transmissions from server database...</div>
+      </div>
+      <div class="modal-footer-bar">
+        <span class="db-status-label">Database: <code>data/messages.json</code></span>
+        <button type="button" class="db-export-btn" id="db-export-btn">EXPORT JSON ⤓</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Owner Transmission Dossiers & Official Approval Modal -->
+  <div class="portfolio-modal" id="owner-reports-modal" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="modal-backdrop" id="owner-reports-backdrop"></div>
+    <div class="modal-dialog messages-dialog glass-panel" style="max-width: 900px;">
+      <div class="modal-header">
+        <div class="modal-tag">// OWNER TRANSMISSION AUDIT DOSSIERS &amp; APPROVAL DESK</div>
+        <div class="modal-header-actions">
+          <button type="button" class="modal-action-btn" id="reports-refresh-btn" title="Refresh transmission dossiers">↻ REFRESH</button>
+          <button type="button" class="modal-close-btn" id="owner-reports-close-btn" aria-label="Close dialog">✕</button>
+        </div>
+      </div>
+      <div class="owner-dossier-intro">
+        <div class="dossier-badge-row">
+          <span class="live-pulse-badge"><span class="pulse-point"></span> OWNER ALERT: pranavsonar4444@gmail.com</span>
+          <span class="security-chip">CONFIDENTIAL DOSSIER VAULT</span>
+        </div>
+        <p class="dossier-subtext">
+          Audit desk tracking repeat transmissions from single or multiple senders. When user sends 2 transmissions with the same name &amp; email, all data is automatically compiled into an official document report. Approving owner permission authorizes the transmission dossier.
+        </p>
+      </div>
+      <div class="messages-container" id="owner-reports-list-container">
+        <div class="loading-spinner">Loading transmission audit reports...</div>
+      </div>
+      <div class="modal-footer-bar">
+        <span class="db-status-label">Storage: <code>data/reports/</code> &amp; <code>reports_index.json</code></span>
+        <button type="button" class="db-export-btn" id="reports-quick-auth-btn">AUTHORIZE VIA PIN (pranav4444) ✓</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Interactive Resume Modal -->
+  <div class="portfolio-modal" id="resume-modal" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="modal-backdrop" id="resume-backdrop"></div>
+    <div class="modal-dialog resume-dialog glass-panel">
+      <div class="modal-header">
+        <div class="modal-tag">// PRANAV SONAR — CURRICULUM VITAE</div>
+        <button type="button" class="modal-close-btn" id="resume-close-btn" aria-label="Close dialog">✕</button>
+      </div>
+      <div class="resume-sheet">
+        <div class="resume-header">
+          <div>
+            <h2 class="resume-name">PRANAV SONAR</h2>
+            <div class="resume-role">CREATIVE TECHNOLOGIST &amp; FULL-STACK ENGINEER</div>
+          </div>
+          <div class="resume-contact-info">
+            <div>📍 Pune, India</div>
+            <div>📞 <a href="tel:+919284166996" style="color: inherit; text-decoration: none;">+91 9284166996</a></div>
+            <div>✉ <a href="mailto:pranavsonar802@gmail.com" style="color: inherit; text-decoration: none;">pranavsonar802@gmail.com</a></div>
+            <div>▶ <a href="https://www.youtube.com/@kingofshort7004" target="_blank" rel="noopener" style="color: inherit; text-decoration: none;">youtube.com/@kingofshort7004</a></div>
+            <div>📸 <a href="https://www.instagram.com/px_backlight777?obrf=emptbm5idWxnNDV5" target="_blank" rel="noopener" style="color: inherit; text-decoration: none;">instagram.com/px_backlight777</a></div>
+            <div>🟡 <a href="https://leetcode.com/u/pxprnavvv2006/" target="_blank" rel="noopener" style="color: inherit; text-decoration: none;">leetcode.com/u/pxprnavvv2006</a></div>
+            <div>🟢 <a href="https://www.geeksforgeeks.org/profile/pranavsod53v?tab=activity" target="_blank" rel="noopener" style="color: inherit; text-decoration: none;">geeksforgeeks.org/profile/pranavsod53v</a></div>
+            <div>🐙 <a href="https://github.com/pranavsonar802-max" target="_blank" rel="noopener" style="color: inherit; text-decoration: none;">github.com/pranavsonar802-max</a></div>
+          </div>
+        </div>
+        <div class="resume-divider"></div>
+        <div class="resume-section">
+          <h3>SUMMARY</h3>
+          <p>Full-stack engineer and creative technologist specializing in high-performance WebGL/Canvas interfaces, real-time WebSocket applications, and distributed cloud services. Passionate about 60fps responsive physics, microsecond response latencies, and modern engineering standards.</p>
+        </div>
+        <div class="resume-section">
+          <h3>EXPERIENCE &amp; PRODUCTION PLATFORMS</h3>
+          <div class="resume-item">
+            <div class="resume-item-title"><strong>Sender App</strong> — Real-Time Cloud Messaging Platform</div>
+            <div class="resume-item-desc">Engineered full-stack WebSocket architecture with instantaneous room synchronization and Vercel cloud deployment.</div>
+          </div>
+          <div class="resume-item">
+            <div class="resume-item-title"><strong>Aura Cinema &amp; Canvas Engine</strong> — Hardware Accelerated Visualizer</div>
+            <div class="resume-item-desc">Engineered 60fps interactive linear momentum frame scrubbing system handling 300+ 1080p frames with zero dependencies.</div>
+          </div>
+          <div class="resume-item">
+            <div class="resume-item-title"><strong>Silvertongue</strong> — Native Kotlin Concurrency Engine</div>
+            <div class="resume-item-desc">Architected high-throughput mobile communication engine using Kotlin Coroutines and clean modular design.</div>
+          </div>
+        </div>
+        <div class="resume-section">
+          <h3>CORE COMPETENCIES</h3>
+          <p><strong>Languages:</strong> JavaScript (ESNext), TypeScript, Python, Kotlin, SQL, HTML5/CSS3</p>
+          <p><strong>Frameworks &amp; Tools:</strong> React, Next.js, Node.js, Express, WebGL, Canvas 2D, Docker, Git, Linux</p>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="project-btn primary" id="print-resume-btn">🖨️ PRINT / SAVE PDF</button>
+        <a href="tel:+919284166996" class="project-btn primary">CALL +91 9284166996 📞</a>
+        <a href="https://leetcode.com/u/pxprnavvv2006/" target="_blank" rel="noopener" class="project-btn secondary">LEETCODE 🟡</a>
+        <a href="https://www.geeksforgeeks.org/profile/pranavsod53v?tab=activity" target="_blank" rel="noopener" class="project-btn secondary">GFG 🟢</a>
+        <a href="https://www.youtube.com/@kingofshort7004" target="_blank" rel="noopener" class="project-btn secondary">YOUTUBE ▶</a>
+        <a href="https://www.instagram.com/px_backlight777?obrf=emptbm5idWxnNDV5" target="_blank" rel="noopener" class="project-btn secondary">INSTAGRAM 📸</a>
+        <a href="mailto:pranavsonar802@gmail.com" class="project-btn secondary">EMAIL ✉</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Feature 1: Floating Visitor Appreciation Invitation Card -->
+  <div class="cert-invitation-card" id="cert-invitation-card" role="dialog" aria-live="polite">
+    <button type="button" class="invitation-close-btn" id="invitation-close-btn" aria-label="Dismiss invitation">✕</button>
+    <div class="invitation-badge">
+      <span class="invitation-dot"></span>
+      <span>VISITOR APPRECIATION</span>
+    </div>
+    <h3 class="invitation-headline">THANK YOU FOR VISITING MY DIGITAL WORLD</h3>
+    <p class="invitation-desc">Your curiosity fuels creativity. Take home a small reminder of your visit to my portfolio.</p>
+    <div class="invitation-actions">
+      <button type="button" class="invitation-btn primary" id="invitation-get-btn">GET YOUR APPRECIATION CERTIFICATE</button>
+      <button type="button" class="invitation-btn secondary" id="invitation-dismiss-btn">CONTINUE EXPLORING</button>
+    </div>
+  </div>
+
+  <!-- Features 2-6: Digital Visitor Appreciation Certificate System Modal -->
+  <div class="portfolio-modal cert-system-modal" id="certificate-modal" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="modal-backdrop" id="cert-modal-backdrop"></div>
+    <div class="modal-dialog cert-modal-dialog glass-panel">
+      <div class="modal-header">
+        <div class="modal-tag">// DIGITAL VISITOR APPRECIATION CERTIFICATE</div>
+        <button type="button" class="modal-close-btn" id="cert-modal-close-top" aria-label="Close modal">✕</button>
+      </div>
+
+      <!-- VIEW 1: Generator & Live Preview -->
+      <div class="cert-view-section active" id="cert-generator-view">
+        <div class="cert-controls-panel">
+          <div class="cert-controls-header">
+            <h2 class="cert-panel-title">PERSONALIZED CERTIFICATE GENERATOR</h2>
+            <p class="cert-panel-sub">Enter your full name below to instantly personalize and download your official Digital Visitor Appreciation Certificate.</p>
+          </div>
+          
+          <div class="cert-input-group">
+            <label for="cert-name-input" class="cert-input-label">YOUR FULL NAME</label>
+            <div class="cert-input-wrapper">
+              <input type="text" id="cert-name-input" class="cert-name-input" placeholder="e.g. Elon Musk, Sarah Connor, Alex Vance" maxlength="60" autocomplete="name" />
+              <span class="cert-input-icon">✒️</span>
+            </div>
+            <div class="cert-input-error" id="cert-name-error" style="display: none;">
+              ⚠️ Please enter your name to generate your certificate.
+            </div>
+          </div>
+
+          <div class="cert-actions-row">
+            <button type="button" class="cert-action-btn primary-btn" id="cert-download-btn">
+              <span class="btn-icon" id="cert-btn-icon">⤓</span>
+              <span class="btn-label" id="cert-download-btn-label">GENERATE &amp; DOWNLOAD PDF</span>
+            </button>
+            <button type="button" class="cert-action-btn secondary-btn" id="cert-close-btn">
+              <span class="btn-label">BACK TO PORTFOLIO</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Live Certificate Preview Container -->
+        <div class="cert-preview-container" id="cert-preview-container">
+          <div class="preview-badge-bar">
+            <span>LIVE CERTIFICATE PREVIEW (LANDSCAPE A4)</span>
+            <span class="preview-resolution-tag">HIGH-RESOLUTION PDF READY</span>
+          </div>
+          
+          <div class="cert-preview-scaler">
+            <!-- The Certificate Card (Rendered & Exported to PDF) -->
+            <div class="certificate-card" id="certificate-card">
+              <!-- Corner Decorative Accent Borders -->
+              <div class="cert-border-corner top-left"></div>
+              <div class="cert-border-corner top-right"></div>
+              <div class="cert-border-corner bottom-left"></div>
+              <div class="cert-border-corner bottom-right"></div>
+
+              <!-- Outer Frame Lines -->
+              <div class="cert-outer-frame">
+                <div class="cert-inner-frame">
+                  
+                  <!-- Certificate Top Header -->
+                  <div class="cert-top-header">
+                    <div class="cert-brand-monogram">
+                      <div class="monogram-box">PS</div>
+                    </div>
+                    
+                    <div class="cert-presenter-brand">
+                      <div class="brand-main-name">PRANAV SONAR</div>
+                      <div class="brand-sub-tag">CREATIVE TECHNOLOGIST &amp; PORTFOLIO</div>
+                    </div>
+
+                    <div class="cert-top-motto">
+                      <span>IDEAS ⟶ CODE ⟶</span>
+                      <span>INTERACTIVE EXPERIENCES</span>
+                    </div>
+                  </div>
+
+                  <!-- Main Certificate Body Section -->
+                  <div class="cert-main-body">
+                    <h1 class="cert-main-title">
+                      CERTIFICATE <span class="purple-glow-text">OF APPRECIATION</span>
+                    </h1>
+                    
+                    <div class="cert-divider-line">
+                      <span class="divider-diamond">✦</span>
+                    </div>
+
+                    <div class="cert-edition-badge">DIGITAL VISITOR EDITION</div>
+
+                    <p class="cert-presentation-text">This certificate is proudly presented to</p>
+
+                    <!-- Dynamic Visitor Name Display -->
+                    <div class="cert-visitor-name-box">
+                      <h2 class="cert-visitor-name" id="cert-display-name">Elon Musk</h2>
+                      <div class="cert-name-underline"></div>
+                    </div>
+
+                    <!-- Appreciation Message -->
+                    <p class="cert-appreciation-msg">
+                      In appreciation of your time and interest in exploring my creative portfolio, projects, and digital experiences.
+                    </p>
+                    <p class="cert-thankyou-line">
+                      Thank you for being part of my creative journey.
+                    </p>
+                  </div>
+
+                  <!-- Certificate Bottom Footer Grid -->
+                  <div class="cert-bottom-grid">
+                    <!-- Left: Certificate Metadata -->
+                    <div class="cert-meta-block">
+                      <div class="meta-row">
+                        <span class="meta-label">🆔 CERTIFICATE ID</span>
+                        <span class="meta-dots">:</span>
+                        <span class="meta-val" id="cert-display-id">PS-VC-20261010-8742</span>
+                      </div>
+                      <div class="meta-row">
+                        <span class="meta-label">📅 DATE OF ISSUE</span>
+                        <span class="meta-dots">:</span>
+                        <span class="meta-val" id="cert-display-date">10 Oct 2026</span>
+                      </div>
+                      <div class="meta-row">
+                        <span class="meta-label">👤 VISITOR NAME</span>
+                        <span class="meta-dots">:</span>
+                        <span class="meta-val" id="cert-display-visitor">Elon Musk</span>
+                      </div>
+                      <div class="meta-row">
+                        <span class="meta-label">🎖️ ISSUED BY</span>
+                        <span class="meta-dots">:</span>
+                        <span class="meta-val">Pranav Sonar</span>
+                      </div>
+                      <div class="meta-row">
+                        <span class="meta-label">🌐 PORTFOLIO</span>
+                        <span class="meta-dots">:</span>
+                        <span class="meta-val">PRANAV SONAR — Creative Technologist &amp; Portfolio</span>
+                      </div>
+                      <div class="meta-row">
+                        <span class="meta-label">⭐️ PURPOSE</span>
+                        <span class="meta-dots">:</span>
+                        <span class="meta-val">Visitor Appreciation</span>
+                      </div>
+                    </div>
+
+                    <!-- Center Decorative Graphic -->
+                    <div class="cert-center-graphic">
+                      <svg class="cert-poly-shape" viewBox="0 0 100 100">
+                        <polygon points="50,5 90,30 90,70 50,95 10,70 10,30" fill="none" stroke="rgba(192, 132, 252, 0.4)" stroke-width="1.5" />
+                        <polygon points="50,20 75,35 75,65 50,80 25,65 25,35" fill="none" stroke="rgba(168, 85, 247, 0.6)" stroke-width="1" />
+                        <circle cx="50" cy="50" r="8" fill="rgba(192, 132, 252, 0.8)" />
+                      </svg>
+                    </div>
+
+                    <!-- Right: Presenter Signature -->
+                    <div class="cert-signature-block">
+                      <div class="signature-cursive">Pranav Sonar</div>
+                      <div class="signature-line"></div>
+                      <div class="sig-title-label">DESIGNED &amp; PRESENTED BY</div>
+                      <div class="sig-presenter-name">PRANAV SONAR</div>
+                      <div class="sig-presenter-role">Creative Technologist | Developer | Innovator</div>
+                      <div class="sig-quote">"Every visit inspires another creation."</div>
+                    </div>
+                  </div>
+
+                  <!-- Certificate Bottom Baseline Footer -->
+                  <div class="cert-bottom-baseline">
+                    <span class="baseline-line left"></span>
+                    <span class="baseline-text">PRANAV SONAR — CREATIVE TECHNOLOGIST &amp; PORTFOLIO</span>
+                    <span class="baseline-line right"></span>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- VIEW 2: Feature 6 Thank-You Screen -->
+      <div class="cert-view-section" id="cert-thankyou-view" style="display: none;">
+        <div class="thankyou-card glass-panel">
+          <div class="thankyou-icon-badge">✨</div>
+          <h2 class="thankyou-headline">THANK YOU FOR BEING HERE</h2>
+          <p class="thankyou-message">
+            Thank you for exploring my creative world. I hope my work inspires you to think differently, build boldly, and keep creating.
+          </p>
+          <div class="thankyou-signature-block">
+            <div class="thankyou-quote">"Keep exploring. Keep creating."</div>
+            <div class="thankyou-author">PRANAV SONAR</div>
+            <div class="thankyou-role">Creative Technologist &amp; Portfolio</div>
+          </div>
+
+          <div class="thankyou-actions-row">
+            <button type="button" class="thankyou-btn primary" id="thankyou-redownload-btn">
+              <span>⤓ DOWNLOAD AGAIN</span>
+            </button>
+            <button type="button" class="thankyou-btn secondary" id="thankyou-explore-btn">
+              <span>EXPLORE MY PROJECTS ⟶</span>
+            </button>
+            <button type="button" class="thankyou-btn tertiary" id="thankyou-home-btn">
+              <span>RETURN TO HOME ↺</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Scroll Height Space (Controls the scrubbing runway) -->
+  <div class="scroll-track" id="scroll-track"></div>
+
+  <script src="script.js?v=3.2"></script>
+
+    </div>
+  </div>
+
+  <!-- Privacy-Conscious Portfolio Usage Analytics Dashboard Modal -->
+  <div class="portfolio-modal" id="analytics-modal" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="modal-backdrop" id="analytics-backdrop"></div>
+    <div class="modal-dialog analytics-dialog glass-panel" style="max-width: 960px;">
+      
+      <div class="modal-header">
+        <div class="modal-tag">// PORTFOLIO USAGE TELEMETRY &amp; AUDIT DASHBOARD</div>
+        <div class="modal-header-actions">
+          <button type="button" class="modal-action-btn" id="analytics-refresh-btn" title="Refresh live metrics">↻ REFRESH</button>
+          <button type="button" class="modal-close-btn" id="analytics-close-btn" aria-label="Close dialog">✕</button>
+        </div>
+      </div>
+
+      <!-- Privacy Compliance Banner -->
+      <div class="analytics-compliance-banner">
+        <span class="compliance-pulse"></span>
+        <span><strong>PRIVACY-FIRST ENGINE:</strong> Zero third-party trackers, zero cookies, zero IP storage. Completely private, anonymous, and GDPR compliant.</span>
+      </div>
+
+      <!-- Key Metrics Row (4 Cards) -->
+      <div class="analytics-metrics-grid">
+        <div class="metric-card">
+          <div class="metric-icon">👁️</div>
+          <div class="metric-info">
+            <div class="metric-label">TOTAL VISITS</div>
+            <div class="metric-value" id="stat-total-visits">0</div>
+            <div class="metric-sub" id="stat-unique-sessions">0 Unique Sessions</div>
+          </div>
+        </div>
+
+        <div class="metric-card">
+          <div class="metric-icon">🏆</div>
+          <div class="metric-info">
+            <div class="metric-label">PROJECT VIEWS</div>
+            <div class="metric-value" id="stat-total-project-views">0</div>
+            <div class="metric-sub" id="stat-top-project-name">Top: Sender App</div>
+          </div>
+        </div>
+
+        <div class="metric-card">
+          <div class="metric-icon">📄</div>
+          <div class="metric-info">
+            <div class="metric-label">RESUME DOWNLOADS</div>
+            <div class="metric-value" id="stat-resume-downloads">0</div>
+            <div class="metric-sub">CV &amp; Certificate Requests</div>
+          </div>
+        </div>
+
+        <div class="metric-card">
+          <div class="metric-icon">✉️</div>
+          <div class="metric-info">
+            <div class="metric-label">TRANSMISSIONS</div>
+            <div class="metric-value" id="stat-contact-submissions">0</div>
+            <div class="metric-sub">Contact Form &amp; ERP Requests</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Breakdown Grid (2 Columns: Popular Projects & Referral Sources) -->
+      <div class="analytics-breakdown-grid">
+        <!-- Popular Projects Card -->
+        <div class="analytics-panel-card">
+          <div class="analytics-panel-title">
+            <span>🔥 POPULAR PROJECTS RANKING</span>
+            <span class="analytics-panel-tag">CLICK-THROUGHS</span>
+          </div>
+          <div class="project-ranking-list" id="analytics-projects-list">
+            <div class="loading-spinner">Loading project metrics...</div>
+          </div>
+        </div>
+
+        <!-- Referral Sources & Devices Card -->
+        <div class="analytics-panel-card">
+          <div class="analytics-panel-title">
+            <span>🌐 REFERRAL SOURCES</span>
+            <span class="analytics-panel-tag">CHANNELS</span>
+          </div>
+          <div class="referral-list" id="analytics-referrals-list">
+            <div class="loading-spinner">Loading referral metrics...</div>
+          </div>
+
+          <div class="analytics-panel-title" style="margin-top: 18px;">
+            <span>📱 DEVICE &amp; PLATFORM SPREAD</span>
+            <span class="analytics-panel-tag">MOBILE / DESKTOP</span>
+          </div>
+          <div class="device-spread-row" id="analytics-devices-list">
+            <div class="loading-spinner">Loading device metrics...</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Live Recent Activity Ticker -->
+      <div class="analytics-panel-card" style="margin-top: 16px;">
+        <div class="analytics-panel-title">
+          <span>⚡ RECENT ANONYMOUS ACTIVITY LOG</span>
+          <span class="analytics-panel-tag">REAL-TIME TELEMETRY</span>
+        </div>
+        <div class="recent-events-container" id="analytics-recent-events">
+          <div class="loading-spinner">Loading activity stream...</div>
+        </div>
+      </div>
+
+      <div class="modal-footer-bar" style="margin-top: 18px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+        <span style="font-size: 0.68rem; font-family: var(--font-mono); color: var(--text-muted);">
+          Data persisted securely in <code>data/analytics.json</code>
+        </span>
+        <div style="display: flex; gap: 8px;">
+          <button type="button" class="form-action-pill report-btn" id="analytics-export-btn">
+            <span>⤓ EXPORT REPORT (JSON)</span>
+          </button>
+          <button type="button" class="form-action-pill gmail-btn" id="analytics-reset-btn" style="background: rgba(239, 68, 68, 0.15); border-color: rgba(239, 68, 68, 0.5); color: #fca5a5;">
+            <span>🗑 RESET METRICS (PIN)</span>
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Live Real-Time Owner Transmission HUD (Alerts Owner Instantly on ANY Device) -->
+  <div class="owner-live-hud" id="owner-live-hud" aria-live="assertive" role="region" aria-label="Real-time Transmission Alert" style="display: none;">
+    <div class="hud-inner glass-panel">
+      <div class="hud-header">
+        <div class="hud-status">
+          <span class="hud-pulse-dot"></span>
+          <span class="hud-tag">// REAL-TIME OWNER DISPATCH</span>
+        </div>
+        <button type="button" class="hud-close-btn" id="hud-close-btn" aria-label="Dismiss alert">✕</button>
+      </div>
+      <div class="hud-body">
+        <div class="hud-title">⚡ NEW VISITOR MESSAGE RECEIVED</div>
+        <div class="hud-sender-info">
+          <span class="hud-name" id="hud-sender-name">Visitor</span>
+          <span class="hud-email" id="hud-sender-email">email@example.com</span>
+        </div>
+        <div class="hud-message-text" id="hud-message-body">"Message content..."</div>
+        <div class="hud-req-id" id="hud-req-id-text">ID: REQ-xxxx</div>
+      </div>
+      <div class="hud-actions-row">
+        <button type="button" class="hud-action-pill hud-approve-btn" id="hud-approve-btn">
+          <span>⚡ 1-CLICK APPROVE</span>
+        </button>
+        <a href="https://wa.me/919284166996" target="_blank" rel="noopener" class="hud-action-pill hud-wa-btn" id="hud-wa-btn">
+          <span>💬 WHATSAPP</span>
+        </a>
+        <a href="mailto:pranavsonar4444@gmail.com" target="_blank" rel="noopener" class="hud-action-pill hud-gmail-btn" id="hud-gmail-btn">
+          <span>✉ GMAIL</span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scroll Height Space (Controls the scrubbing runway) -->
+  <div class="scroll-track" id="scroll-track"></div>
+
+  <!-- Master Single Configuration File (Change Anything Here) -->
+  <script src="SITE_CHANGES_CONFIG.js"></script>
+  <script src="script.js?v=3.3"></script>
+</body>
+</html>
